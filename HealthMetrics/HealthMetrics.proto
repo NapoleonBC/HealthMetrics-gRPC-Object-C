@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package health_metrics;
+
+// Define the message types for health metrics
+message HealthMetric {
+    string metric_name = 1;
+    float value = 2;
+    int64 timestamp = 3;
+}
+
+// Define the message type for specifying metrics and sampling rate
+message MetricConfiguration {
+    repeated string metric_names = 1;
+    int32 sampling_rate = 2;
+}
+
+// Define the service for health metrics
+service HealthMetricsService {
+    // Stream health metrics data from the client to the server
+    rpc StreamMetrics (stream HealthMetric) returns (google.protobuf.Empty);
+
+    // Configure health metric data collection, including sampling rate
+    rpc ConfigureMetrics (stream MetricConfiguration) returns (google.protobuf.Empty);
+
+    // Retrieve health metric data based on criteria
+    rpc GetMetrics (stream MetricConfiguration) returns (stream HealthMetric);
+
+    // Check the status/health of the server
+    rpc CheckStatus (google.protobuf.Empty) returns (google.protobuf.Empty);
+
+    // Log diagnostic information
+    // rpc LogDiagnosticInfo (StringValue message) returns (google.protobuf.Empty);
+
+    // Report errors or issues
+    // rpc ReportError (StringValue error_message) returns (google.protobuf.Empty);
+}import "google/protobuf/empty.proto";
